@@ -1,0 +1,25 @@
+[18:53:28.371 - error] <www> server start...
+[18:53:28.392 - error] <cmd> error, code: 210701201918, errno: undefined, msg: "/hmi/bin/projectParser is not exists", stack: "Error: /hmi/bin/projectParser is not exists
+    at Object.<anonymous> (C:\Program Files (x86)\Haiwell\HaiwellScada3\resources\app\webserver\ts\dest\cmd\projectParser.js:12:45)
+    at Module._compile (internal/modules/cjs/loader.js:786:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:798:10)
+    at Module.load (internal/modules/cjs/loader.js:645:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:560:12)
+    at Module.require (internal/modules/cjs/loader.js:685:19)
+    at require (internal/modules/cjs/helpers.js:16:16)
+    at Object.<anonymous> (C:\Program Files (x86)\Haiwell\HaiwellScada3\resources\app\webserver\ts\dest\cmd\index.js:7:23)
+    at Module._compile (internal/modules/cjs/loader.js:786:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:798:10)"
+[18:53:28.704 - error] <ffmpeg> error, code: 20220909, errno: undefined, msg: "/hmi/bin/amrwb-dec is not exists", stack: "Error: /hmi/bin/amrwb-dec is not exists
+    at Object.<anonymous> (C:\Program Files (x86)\Haiwell\HaiwellScada3\resources\app\webserver\ts\dest\cmd\ffmpeg.js:12:41)
+    at Module._compile (internal/modules/cjs/loader.js:786:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:798:10)
+    at Module.load (internal/modules/cjs/loader.js:645:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:560:12)
+    at Module.require (internal/modules/cjs/loader.js:685:19)
+    at require (internal/modules/cjs/helpers.js:16:16)
+    at Object.<anonymous> (C:\Program Files (x86)\Haiwell\HaiwellScada3\resources\app\webserver\ts\dest\components\voice\route.js:10:16)
+    at Module._compile (internal/modules/cjs/loader.js:786:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:798:10)"
+[18:53:28.760 - error] <ts.voice.startup> rm voice temp error:"ENOENT: no such file or directory, scandir 'C:\Program Files (x86)\Haiwell\HaiwellScada3\resources\app\data\userData\voiceTemp'"
+[18:54:00.297 - error] <initstat> ""C:\Program Files (x86)\Haiwell\HaiwellScada3\resources\app\bin\initstat.sh" C:\Program Files (x86)\Haiwell\HaiwellScada3\resources\app\config\setup.ini MACHINE machine_name Scada" error: {killed:false, code:1, signal:null, cmd:""C:\Program Files (x86)\Haiwell\HaiwellScada3\resources\app\bin\initstat.sh" C:\Program Files (x86)\Haiwell\HaiwellScada3\resources\app\config\setup.ini MACHINE machine_name Scada"}
