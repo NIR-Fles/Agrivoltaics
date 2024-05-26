@@ -1,4 +1,5 @@
 #include <Wire.h>
+#include <Nextion.h>
 #include "ClosedCube_SHT31D.h"
 
 ClosedCube_SHT31D sht3xd;
@@ -9,6 +10,7 @@ void setup()
 {
 	Wire.begin(); // Default SDA & SCL is GPIO 8 and GPIO 9
 	Serial.begin(115200);
+  Serial1.begin(115200); // Communication for HMI
 	sht3xd.begin(0x44); // I2C address: 0x44 or 0x45
 	if (sht3xd.periodicStart(SHT3XD_REPEATABILITY_HIGH, SHT3XD_FREQUENCY_10HZ) != SHT3XD_NO_ERROR) // SHT31-D Error Checking
   { 
@@ -20,6 +22,12 @@ void loop()
 {
 	printResult(sht3xd.periodicFetchData());
 	delay(1000);
+  Serial1.print("n0.val=" + String(temperature));
+  Serial1.write(0xff);
+  Serial1.write(0xff);
+  Serial1.write(0xff);
+  delay(1000);
+  
 }
 
 void printResult(SHT31D result) {
