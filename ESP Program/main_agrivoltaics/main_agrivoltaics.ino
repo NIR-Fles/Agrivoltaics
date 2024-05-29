@@ -24,7 +24,7 @@ NexTouch *nex_listen_list[] =
 
 const char *service_name = "Agrivoltaics";
 const char *pop = "Agrivoltaics2024";
-static uint8_t gpio_0 = 0;
+// static uint8_t gpio_reset = 0;
 static uint8_t gpio_switch0 = RGB_BUILTIN;
 static uint8_t gpio_switch1 = RGB_BUILTIN;
 static uint8_t gpio_switch2 = RGB_BUILTIN;
@@ -232,30 +232,6 @@ void setup()
 
 void loop()
 {
-  if (digitalRead(gpio_0) == LOW)  // Push button pressed
-  { 
-    // Key debounce handling
-    delay(100);
-    int startTime = millis();
-    while (digitalRead(gpio_0) == LOW) 
-    {
-      delay(50);
-    }
-    int endTime = millis();
-
-    if ((endTime - startTime) > 10000) 
-    {
-      // If key pressed for more than 10secs, reset all
-      Serial.printf("Reset to factory.\n");
-      RMakerFactoryReset(2);
-    } 
-    else if ((endTime - startTime) > 3000) 
-    {
-      Serial.printf("Reset Wi-Fi.\n");
-      // If key pressed for more than 3secs, but less than 10, reset Wi-Fi
-      RMakerWiFiReset(2);
-    } 
-  }
   unsigned long currentMillis = millis();
   if (currentMillis - previousMillis >= interval) 
   {
