@@ -5,8 +5,10 @@
 #include <WiFi.h> // error occured not found bits\error_constants.h -> must copy from other related file [fixed]
 #include <WiFiProv.h>
 #include <AppInsights.h> // error occured when try to compile gen_insight_packages.py -> gtw bjir tiba tiba bisa gitu [fixed]
+#include "SimpleTimer.h"
 
 ClosedCube_SHT31D sht3xd;
+SimpleTimer Timer;
 
 NexDSButton bt0 = NexDSButton(1, 5, "bt0");
 NexDSButton bt1 = NexDSButton(1, 6, "bt1");
@@ -29,6 +31,8 @@ static uint8_t gpio_switch0 = RGB_BUILTIN;
 static uint8_t gpio_switch1 = RGB_BUILTIN;
 static uint8_t gpio_switch2 = RGB_BUILTIN;
 static uint8_t gpio_switch3 = RGB_BUILTIN;
+static TemperatureSensor *my_temperature = NULL;
+static TemperatureSensor *my_humidity = NULL;
 static Switch *my_switch0 = NULL;
 static Switch *my_switch1 = NULL;
 static Switch *my_switch2 = NULL;
@@ -41,7 +45,7 @@ bool switch3_state = false;
 unsigned long previousMillis = 0;
 const long interval = 1000; // Interval in milliseconds
 
-float temperature, humidity;
+float temp, hum;
 int temp_nextion, hum_nextion;
 
 void sysProvEvent(arduino_event_t *sys_event)
@@ -164,19 +168,19 @@ void bt3PopCallback(void *ptr)
   }
 }
 
-void sht31dReadingValue()
+void reading_and_send_sensor_value()
 {
   SHT31D result = sht3xd.periodicFetchData();
-  temperature = result.t;
-  humidity = result.rh;
-  temp_nextion = temperature * 100;
-  hum_nextion = humidity * 100;
+  temp = result.t;
+  hum = result.rh;
+  temp_nextion = temp * 100;
+  hum_nextion = hum * 100;
 }
 
-void nextionSendData()
+void nextion_send_data()
 {
-  Serial1.print("page2.va6.txt=\"" + String(temperature) + "\"\xFF\xFF\xFF"); // va6 i for temp data record
-  Serial1.print("page2.va7.txt=\"" + String(humidity) + "\"\xFF\xFF\xFF"); // va7 is for hum data record
+  Serial1.print("page2.va6.txt=\"" + String(temp) + "\"\xFF\xFF\xFF"); // va6 i for temp data record
+  Serial1.print("page2.va7.txt=\"" + String(hum) + "\"\xFF\xFF\xFF"); // va7 is for hum data record
   Serial1.print("page0.x4.val=" + String(temp_nextion) + "\xFF\xFF\xFF"); // x4 is temp xfloat in nextion
   Serial1.print("page0.x5.val=" + String(hum_nextion) + "\xFF\xFF\xFF");  // x5 is hum xfloat in nextion 
 }
@@ -198,6 +202,8 @@ void setup()
   digitalWrite(gpio_switch3, LOW);
   Node my_node;
   my_node = RMaker.initNode("Agrivoltaics Rainmaker IoT");
+  my_temperature = new TemperatureSensor("Temperature (°C)");
+  my_humidity = new TemperatureSensor("Humidity (%RH)");
   my_switch0 = new Switch("Switch Pump 1", &gpio_switch0);
   my_switch1 = new Switch("Switch Pump 2", &gpio_switch1);
   my_switch2 = new Switch("Switch Valve 1", &gpio_switch2);
@@ -210,11 +216,14 @@ void setup()
   my_switch1->addCb(write_callback);
   my_switch2->addCb(write_callback);
   my_switch3->addCb(write_callback);
+  my_node.addDevice(*my_temperature);
+  my_node.addDevice(*my_humidity);
   my_node.addDevice(*my_switch0);
   my_node.addDevice(*my_switch1);
   my_node.addDevice(*my_switch2);
   my_node.addDevice(*my_switch3);
   RMaker.enableOTA(OTA_USING_TOPICS);
+  RMaker.setTimeZone("Asia/Jakarta");
   RMaker.enableTZService();
   RMaker.enableSchedule();
   RMaker.enableScenes();
@@ -228,16 +237,23 @@ void setup()
   bt1.attachPop(bt1PopCallback, &bt1);
   bt2.attachPop(bt2PopCallback, &bt2);
   bt3.attachPop(bt3PopCallback, &bt3);
+  Timer.setInterval(30000);
 }
 
 void loop()
 {
+  if (Timer.isReady() && WiFi.status() == WL_CONNECTED)
+  {
+    my_temperature->updateAndReportParam("Temperature", temp);
+    my_humidity->updateAndReportParam("Temperature", hum);
+    Timer.reset();
+  }
   unsigned long currentMillis = millis();
   if (currentMillis - previousMillis >= interval) 
   {
     previousMillis = currentMillis;
-    sht31dReadingValue();
-    nextionSendData();
+    reading_and_send_sensor_value();
+    nextion_send_data();
   }
   nexLoop(nex_listen_list);
 }
