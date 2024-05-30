@@ -26,7 +26,7 @@ NexTouch *nex_listen_list[] =
 
 const char *service_name = "Agrivoltaics";
 const char *pop = "Agrivoltaics2024";
-// static uint8_t gpio_reset = 0;
+static uint8_t gpio_reset = 0;
 static uint8_t gpio_switch0 = RGB_BUILTIN;
 static uint8_t gpio_switch1 = RGB_BUILTIN;
 static uint8_t gpio_switch2 = RGB_BUILTIN;
@@ -192,6 +192,7 @@ void setup()
 	Wire.begin(); // Default SDA & SCL is GPIO 8 and GPIO 9
 	sht3xd.begin(0x44); // I2C address: 0x44 or 0x45
 	sht3xd.periodicStart(SHT3XD_REPEATABILITY_HIGH, SHT3XD_FREQUENCY_10HZ);
+  pinMode(gpio_reset, INPUT);
   pinMode(gpio_switch0, OUTPUT);
   pinMode(gpio_switch1, OUTPUT);
   pinMode(gpio_switch2, OUTPUT);
@@ -255,5 +256,31 @@ void loop()
     reading_and_send_sensor_value();
     nextion_send_data();
   }
+  // Read GPIO0 (external button to reset device
+  // if (digitalRead(gpio_reset) == LOW) 
+  // {  //Push button pressed
+  //   Serial.printf("Reset Button Pressed!\n");
+  //   // Key debounce handling
+  //   delay(100);
+  //   int startTime = millis();
+  //   while (digitalRead(gpio_reset) == LOW) 
+  //   {
+  //     delay(50);
+  //   }
+  //   int endTime = millis();
+
+  //   if ((endTime - startTime) > 10000) 
+  //   {
+  //     // If key pressed for more than 10secs, reset all
+  //     Serial.printf("Reset to factory.\n");
+  //     RMakerFactoryReset(2);
+  //   } 
+  //   else if ((endTime - startTime) > 3000) 
+  //   {
+  //     Serial.printf("Reset Wi-Fi.\n");
+  //     // If key pressed for more than 3secs, but less than 10, reset Wi-Fi
+  //     RMakerWiFiReset(2);
+  //   }
+  // }
   nexLoop(nex_listen_list);
 }
